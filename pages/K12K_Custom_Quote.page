@@ -1,0 +1,113 @@
+<apex:page id="K12K_Custom_Quote" standardController="Quote" >
+    <style>
+div.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: auto;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    margin-top: 5px;
+}
+
+div.accordion.active, div.accordion:hover {
+    background-color: #ddd; 
+}
+
+div.panel {
+    padding: 0 18px;
+    display: none;
+    background-color: white;
+    transition: 0.8s;        
+}
+
+div.accordion:after {
+    content: '\0028\002B\0029';
+    color: #777;
+    font-weight: bold;
+    float: left;
+    margin-left: 5px;
+}
+
+div.accordion.active:after {
+    content: "\0028\2212\0029";
+}        
+        
+.wrapper {
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.table {
+  font-family: "Helvetica Neue", Helvetica, Arial;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #3b3b3b;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  background: #2b2b2b;        
+  margin: 0 0 40px 0;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: table;
+}
+@media screen and (max-width: 580px) {
+  .table {
+    display: block;
+  }
+}
+
+.row {
+  display: table-row;
+  background: #f6f6f6;
+}
+.row:nth-of-type(odd) {
+  background: #e9e9e9;
+}
+.row.header {
+  font-weight: 900;
+  color: #ffffff;
+  background: #eb0089;
+}
+.row.green {
+  background: #b8e0cd;
+}
+.row.blue {
+  background: #2980b9;
+}
+.cell.green{
+  background: #b8e0cd;
+}        
+@media screen and (max-width: 580px) {
+  .row {
+    padding: 8px 0;
+    display: block;
+  }
+}
+
+.cell {
+  padding: 6px 12px;
+  display: table-cell;
+}
+@media screen and (max-width: 580px) {
+  .cell {
+    padding: 2px 12px;
+    display: block;
+  }
+}        
+    </style>
+    
+    <apex:tabPanel switchType="client" selectedTab="Food" id="theTabPanel">
+    <apex:tab label="Food" name="Food" id="Food"><c:K12K_Custom_Quote_Food /></apex:tab>
+    <apex:tab label="Beverage" name="Beverage" id="Beverage"><c:K12K_Custom_Quote_Bev /></apex:tab>
+    <apex:tab label="Staff" name="Staff" id="Staff"><c:K12K_Custom_Quote_Staff /></apex:tab>        
+    <apex:tab label="Rentals" name="Rentals" id="Rentals"><c:K12K_Custom_Quote_Rentals /></apex:tab>                
+    </apex:tabPanel>
+        
+       
+</apex:page>

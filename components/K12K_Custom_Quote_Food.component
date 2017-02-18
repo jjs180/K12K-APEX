@@ -1,0 +1,322 @@
+<apex:component controller="Custom_Quote_Controller" allowDML="true" >   
+    
+    <apex:actionStatus id="counterStatus">
+        <apex:facet name="start">
+            <div style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; background-color: white; opacity: 0.6; text-align: center; padding-top: 10px; z-index: 1000;">
+                <img src="/img/loading32.gif" />
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    
+    <apex:form id="form">
+    
+    <apex:pageBlock title="Food Items">    
+		<apex:commandButton action="{!saveItems}" value="Save" reRender="form,scripts" status="counterStatus" />
+		<apex:commandButton action="{!GoBack}" value="Go Back"/>        
+        <div class="accordion"> Passed Appetizers <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_PassedAppsTotal}" /></strong></span></div>
+		<div class="wrapper panel">  
+		  <div class="table">                  
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>     
+        <apex:repeat value="{!Food_PassedApps}" var="item">    
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>                            
+    	</div>            
+		</apex:repeat>	                  
+  </div>            
+</div>            
+
+        
+    <div class="accordion"> Dips and Salads <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_DipsSaladsTotal}" /></strong></span></div>
+		<div class="wrapper panel">              
+		  <div class="table">    
+              
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>
+        <apex:repeat value="{!Food_DipsSalads}" var="item">      
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>
+	    </div>              
+		</apex:repeat>		
+	</div>       
+</div>
+
+      <div class="accordion"> Starches <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_StarchesTotal}" /></strong></span></div>
+		<div class="wrapper panel">  
+		  <div class="table">    
+              
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>
+        <apex:repeat value="{!Food_Starches}" var="item">      
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>
+             
+            
+	    </div>              
+		</apex:repeat>		
+	</div>  
+    </div>  
+
+      <div class="accordion"> Proteins <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_ProteinsTotal}" /></strong></span></div>
+		<div class="wrapper panel">  
+		  <div class="table">    
+              
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>
+        <apex:repeat value="{!Food_Proteins}" var="item">      
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>             
+            
+	    </div>              
+		</apex:repeat>		
+	</div>  
+    </div> 
+
+      <div class="accordion"> Food Stations <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_StationsTotal}" /></strong></span></div>
+		<div class="wrapper panel">  
+		  <div class="table">    
+              
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>
+        <apex:repeat value="{!Food_Stations}" var="item">      
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>             
+            
+	    </div>              
+		</apex:repeat>		
+	</div>  
+    </div>
+		
+      <div class="accordion"> Plated <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_PlatedTotal}" /></strong></span></div>
+		<div class="wrapper panel">  
+		  <div class="table">    
+              
+		<div class="row header">
+		    <div class="cell">
+        		Category
+		    </div>
+      		<div class="cell">
+        		Name
+      		</div>
+			<div class="cell">
+				Unit Price
+			</div>
+			<div class="cell">
+        		Quantity
+      		</div>
+      		<div class="cell">
+        		Total
+      		</div>        
+    	</div>
+        <apex:repeat value="{!Food_Plated}" var="item">      
+		<div class="row">
+		    <div class="cell">
+        		<apex:outputText value="{!item.category}" />
+		    </div>
+		    <apex:outputPanel id="panel_name">
+		    <div class="{! IF( item.item.Selected_Quantity__c> 0,'cell green','cell') }">
+        		<apex:outputText value="{!item.Name}" />
+		    </div>
+		    </apex:outputPanel>    
+		    <div class="cell">
+			<apex:outputField value="{!item.Item.UnitPrice}" />
+		    </div>
+		    <div class="cell">
+			<apex:inputText value="{!item.item.Selected_Quantity__c}"> 
+			    <apex:actionSupport event="onkeyup" reRender="panel_name,scripts,scripts" />
+			</apex:inputText>  
+		    </div>
+		    <div class="cell">
+			<apex:outputField value="{!item.item.TotalPrice}" />
+		    </div>
+            
+	    </div>              
+		</apex:repeat>		
+	</div>  
+    </div>        
+    </apex:pageBlock>
+    </apex:form>               
+
+<apex:outputPanel id="scripts">
+<script type="text/javascript">
+var acc = document.getElementsByClassName("accordion");
+var i;
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function(){
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
+        }
+    }
+}
+</script> 
+</apex:outputPanel>    
+</apex:component>
