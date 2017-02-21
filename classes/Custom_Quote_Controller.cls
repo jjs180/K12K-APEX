@@ -1,6 +1,7 @@
 /*
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
-* Custom Quote Controller. Used in the Custom Menu Selection UI
+* Custom Quote Controller virtual class. Used in the Custom Menu Selection UI
+* and extended by individual components' controllers
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Initial implementation
 * @author       Jason Sun <jsun@relationedge.com>
@@ -11,10 +12,12 @@
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 */
-public class Custom_Quote_Controller {
+public virtual class Custom_Quote_Controller {
 
     private final Quote theQuote;  
-    
+    private final Id theQuoteId;
+    private final boolean isVFContext;
+        
     //Lists of the things    
     public List<Quote_Line_Wrapper> Food_PassedApps {get;set;}    
     public List<Quote_Line_Wrapper> Food_DipsSalads {get;set;}    
@@ -23,18 +26,28 @@ public class Custom_Quote_Controller {
     public List<Quote_Line_Wrapper> Food_Proteins {get;set;} 
     public List<Quote_Line_Wrapper> Food_Breads {get;set;} 
     public List<Quote_Line_Wrapper> Food_Stations {get;set;}
-    public List<Quote_Line_Wrapper> Food_Plated {get;set;} 
-    public List<Quote_Line_Wrapper> Bev_Stations {get;set;}     
-    public List<Quote_Line_Wrapper> Staffing {get;set;}     
-    public List<Quote_Line_Wrapper> Rentals {get;set;}  
+    public List<Quote_Line_Wrapper> Food_Plated {get;set;}
+    public List<Quote_Line_Wrapper> Bev_Stations {get;set;}
+    public List<Quote_Line_Wrapper> Staffing {get;set;}    
+    public List<Quote_Line_Wrapper> Rentals {get;set;}
+    public List<Quote_Line_Wrapper> Venue {get;set;}    
 
-	private List<Quote_Line_Wrapper> allTheThings;  
+	public List<Quote_Line_Wrapper> allTheThings;  
     
     public Custom_Quote_Controller(){
-        Id quoteId = Apexpages.currentPage().getParameters().get('Id');
-        this.theQuote = [SELECT Id,Pricebook2Id, Guest_Count__c, Service_Style__c, RecordType.Name FROM Quote WHERE Id =:quoteId];
-        initializeTheThings();
+        this.theQuoteId = Apexpages.currentPage().getParameters().get('Id');                    
+        this.theQuote = [SELECT Id,Pricebook2Id, Guest_Count__c, Service_Style__c, RecordType.Name FROM Quote WHERE Id =:this.theQuoteId];
+        this.isVFContext = true;
     }   
+    
+    //overloaded constructor for using this class from another APEX to 
+    //define the quote Id to use and also initialize the full list of items
+    public Custom_Quote_Controller(Id definedQuoteId){
+        this.theQuoteId = definedQuoteId;
+        this.theQuote = [SELECT Id,Pricebook2Id, Guest_Count__c, Service_Style__c, RecordType.Name FROM Quote WHERE Id =:definedQuoteId];
+        this.isVFContext = false;        
+        initializeTheThings();           
+    }    
     
     private void initializeTheThings(){
 		//initialize the lists of things
@@ -53,114 +66,91 @@ public class Custom_Quote_Controller {
         this.Food_Stations = getItemsHelper('Food', 'Food-Stations');
         this.allTheThings.addAll(this.Food_Stations);          
         this.Food_Plated = getItemsHelper('Food', 'Plated');
-        this.allTheThings.addAll(this.Food_Plated);          
-        
+        this.allTheThings.addAll(this.Food_Plated);                            
+		
         //Beverages
-        this.Bev_Stations = getItemsHelper('Beverage', 'Beverage-Stations');
-        this.allTheThings.addAll(this.Bev_Stations);          
+		this.Bev_Stations = getItemsHelper('Beverage', 'Beverage-Stations');           
+        this.allTheThings.addAll(this.Bev_Stations);                            
+        
+        //Staffing
+        this.Staffing = getItemsHelper('Staffing', ''); //Staffing currently has no subtypes 
+        this.allTheThings.addAll(this.Staffing); 
         
         //Rentals
         this.Rentals = getItemsHelper('Rentals', '%'); //wildcard to get all subtypes
-        this.allTheThings.addAll(this.Rentals);          
-        //Staffing
-        this.Staffing = getItemsHelper('Staffing', ''); //Staffing currently has no subtypes        
-        this.allTheThings.addAll(this.Staffing);          
+        this.allTheThings.addAll(this.Rentals);                
+        
+        //Venue
+        this.Venue = getItemsHelper('Venue', '%'); //wildcard to get all subtypes
+        this.allTheThings.addAll(this.Venue);        
     }
     
     public pageReference goBack(){
         return new pageReference('/' + this.theQuote.Id);
     }
-        
-    public void saveItems(){
+    
+    public virtual void saveItems(){
+        saveItemsList(allTheThings);
+    }
+    
+    public void saveItemsList(List<Quote_Line_Wrapper> itemsList){
         List<QuoteLineItem> qliInserts = new List<QuoteLineItem>();
         List<QuoteLineItem> qliUpdates = new List<QuoteLineItem>();
         List<QuoteLineItem> qliDeletes = new List<QuoteLineItem>();
         
-        for(Quote_Line_Wrapper qlw: this.allTheThings){
+        for(Quote_Line_Wrapper qlw: itemsList){
             if(qlw.item.Id == NULL && qlw.item.Selected_Quantity__c > 0 ){
-                qlw.item.quantity = 99; //the workflow rule will set the actual quantity so we can set this to whatever                
+                qlw.item.quantity = 9999; //the workflow rule will set the actual quantity so we can set this to whatever                
                 qliInserts.add(qlw.item);
             }
             else if(qlw.item.Selected_Quantity__c == 0 && qlw.item.Id != NULL){
                 qliDeletes.add(qlw.item);
             }
             else if(qlw.item.Selected_Quantity__c > 0 && qlw.item.Id != NULL ){
+				qlw.item.quantity = 9999; //the workflow rule will set the actual quantity so we can set this to whatever                                
                 qliUpdates.add(qlw.item);
             }
         }
         if(!qliInserts.isEmpty()){
-            system.debug(qliInserts);
+            system.debug('qliInserts---' + qliInserts);
             try{
 	            insert qliInserts;                
             }
             catch(Exception e){
-                ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));
+                system.debug('Insert error occured---' + e.getMessage());
+                if(isVFContext){
+					ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));                                    
+                }
             }
         }
         if(!qliDeletes.isEmpty()){
+            system.debug('qliDeletes---' + qliDeletes);            
             try{
 	            delete qliDeletes;                
             }
             catch(Exception e){
-                ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));
+                system.debug('Delete error occured---' + e.getMessage());
+                if(isVFContext){
+					ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));                                    
+                }
             }            
         }
         if(!qliUpdates.isEmpty()){
+            system.debug('qliUpdates---' + qliUpdates);            
             try{
 	            update qliUpdates;                
             }
             catch(Exception e){
-                ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));
+                system.debug('Update error occured---' + e.getMessage());
+                if(isVFContext){
+					ApexPages.addMessage( new ApexPages.Message(ApexPages.Severity.ERROR,'An error occured: ' + e.getMessage() ));                                    
+                }
             }            
-        }
-        this.initializeTheThings();       
-    }
+        }       
+    }                                 
+   
     
-    
-    //Get Totals Methods
-    public decimal getFood_PassedAppsTotal(){
-        return this.totalHelper('Food', 'Passed Appetizer');
-    }    
-
-    public decimal getFood_DipsSaladsTotal(){
-        return this.totalHelper('Food', 'Dips&Salads');
-    } 
-
-    public decimal getFood_WrapsWichesTotal(){
-        return this.totalHelper('Food', 'Wraps&Wiches');
-    }
-    
-    public decimal getFood_StarchesTotal(){
-        return this.totalHelper('Food', 'Starches');
-    }      
-        
-    public decimal getFood_ProteinsTotal(){
-        return this.totalHelper('Food', 'Proteins');
-    }     
-    
-    public decimal getFood_BreadsTotal(){
-        return this.totalHelper('Food', 'Breads');
-    }  
-    
-    public decimal getFood_StationsTotal(){
-        return this.totalHelper('Food', 'Food-Stations');
-    }    
-    
-    public decimal getFood_PlatedTotal(){
-        return this.totalHelper('Food', 'Plated');
-    }        
-    
-    public decimal getBev_StationsTotal(){
-        return this.totalHelper('Beverage', 'Beverage-Stations');
-    }    
-    public decimal getRentalTotal(){
-        return this.totalHelper('Rentals', '%');
-    }
-    public decimal getStaffTotal(){
-        return this.totalHelper('Staffing', '');        
-    }     
-    
-    private List<Quote_Line_Wrapper> getItemsHelper(string productType, string subType){
+    public List<Quote_Line_Wrapper> getItemsHelper(string productType, string subType){
         List<Quote_Line_Wrapper> qlwList = new List<Quote_Line_Wrapper>(); 
         Set<Id> existingPBEntryIds = new Set<Id>();       
         //get all existing Quote Lines for this quote
@@ -207,6 +197,7 @@ public class Custom_Quote_Controller {
         return qlwList;        
     }
     
+    /*
     private decimal totalHelper(string productType, string subType){
         decimal total = 0;
 		for(QuoteLineItem qli: [SELECT TotalPrice
@@ -216,7 +207,7 @@ public class Custom_Quote_Controller {
 			total += (qli.TotalPrice == NULL) ? 0 : qli.TotalPrice;                                        
         }
 		return total;        
-    }
+    }*/
       
     
 }

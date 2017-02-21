@@ -1,4 +1,4 @@
-<apex:component controller="K12K_Custom_Quote_Bev" allowDML="true">
+<apex:component controller="K12K_Custom_Quote_Venue" allowDML="true">    
     
     <apex:actionStatus id="counterStatus">
         <apex:facet name="start">
@@ -7,15 +7,14 @@
             </div>
         </apex:facet>
     </apex:actionStatus>
-    
+
     <apex:form Id="form">
-    <apex:pageBlock title="Beverages">
+	<apex:pageBlock title="Venue">
 		<apex:commandButton action="{!saveItems}" value="Save this Tab" reRender="form,scripts" status="counterStatus" />                    
-		<!--<apex:commandButton action="{!GoBack}" value="Go Back"/>-->
-        <div class="accordion"> Beverages Stations <span style="float:right;"><strong>Total: <apex:outputText value="${!Bev_StationsTotal}" /></strong></span></div>
-		<div class="wrapper panel">  
-		  <div class="table">    
-              
+		<!--<apex:commandButton action="{!GoBack}" value="Go Back"/>-->        
+        <div class="accordion"> Venue <span style="float:right;"><strong>Total: <apex:outputText value="${!venueTotal}" /></strong></span></div>
+		<div class="wrapper panel">                      
+		  <div class="table">                  
 		<div class="row header">
 		    <div class="cell">
         		Category
@@ -33,7 +32,7 @@
         		Total
       		</div>        
     	</div>
-        <apex:repeat value="{!Bev_Stations}" var="item">      
+        <apex:repeat value="{!Venue}" var="item">      
 		<div class="row">
 		    <div class="cell">
         		<apex:outputText value="{!item.category}" />
@@ -54,14 +53,13 @@
 		    <div class="cell">
 			<apex:outputField value="{!item.item.TotalPrice}" />
 		    </div>
-            
     	</div>              
 		</apex:repeat>		
   </div>  
 </div>  
-    </apex:pageBlock>
-    </apex:form>     
-    
+</apex:pageBlock>        
+</apex:form>        
+
 <apex:outputPanel id="scripts">
 <script type="text/javascript">
 var acc = document.getElementsByClassName("accordion");
@@ -79,5 +77,4 @@ for (i = 0; i < acc.length; i++) {
 }
 </script> 
 </apex:outputPanel>      
-    
 </apex:component>

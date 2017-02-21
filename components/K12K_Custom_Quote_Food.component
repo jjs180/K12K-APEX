@@ -1,8 +1,8 @@
-<apex:component controller="Custom_Quote_Controller" allowDML="true" >   
+<apex:component controller="K12K_Custom_Quote_Food" allowDML="true" >   
     
     <apex:actionStatus id="counterStatus">
         <apex:facet name="start">
-            <div style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; background-color: white; opacity: 0.6; text-align: center; padding-top: 10px; z-index: 1000;">
+            <div style="position: relative; top: 0px; bottom: 0px; left: 0px; right: 0px; background-color: white; opacity: 0.6; text-align: center; padding-top: 10px; z-index: 1000;">
                 <img src="/img/loading32.gif" />
             </div>
         </apex:facet>
@@ -11,8 +11,8 @@
     <apex:form id="form">
     
     <apex:pageBlock title="Food Items">    
-		<apex:commandButton action="{!saveItems}" value="Save" reRender="form,scripts" status="counterStatus" />
-		<apex:commandButton action="{!GoBack}" value="Go Back"/>        
+		<apex:commandButton action="{!saveItems}" value="Save this Tab" reRender="form,scripts" status="counterStatus" />                    
+		<!--<apex:commandButton action="{!GoBack}" value="Go Back"/>-->        
         <div class="accordion"> Passed Appetizers <span style="float:right;"><strong>Total: <apex:outputText value="${!Food_PassedAppsTotal}" /></strong></span></div>
 		<div class="wrapper panel">  
 		  <div class="table">                  

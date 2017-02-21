@@ -13,7 +13,7 @@
 */
 public class Quote_Trigger_Handlers {
 
-    private static Set<Id> processedQuoteIds = new Set<Id>();
+    private static Set<Id> processedQuoteIds = new Set<Id>();    
     
     public static void afterInsert(List<Quote> newQuoteList){
         List<Quote> quotesToProcess = new List<Quote>();
@@ -29,15 +29,40 @@ public class Quote_Trigger_Handlers {
     
     public static void afterUpdate(Map<Id,Quote> newQuoteMap, Map<Id,Quote> oldQuoteMap){
         List<Quote> quotesToProcess = new List<Quote>();        
+        
+        //get quotes to process for package changes
         for(Quote q: newQuoteMap.values()){
             if(q.Package__c != NULL && !processedQuoteIds.contains(q.Id) &&
               q.Package__c != oldQuoteMap.get(q.Id).Package__c ){
-				quotesToProcess.add(q);                
+				quotesToProcess.add(q);                    
             }
         }
+        
+        //get quotes to process for guest count changes
+        Set<Id> guestChangedQuoteIds = new Set<Id>();
+		for(Quote q: newQuoteMap.values()){
+            if(q.Guest_Count__c != oldQuoteMap.get(q.Id).Guest_Count__c &&
+              !processedQuoteIds.contains(q.Id)){
+                guestChangedQuoteIds.add(q.Id);
+                processedQuoteIds.add(q.Id);
+            }
+        }       
+        
         if(!quotesToProcess.isEmpty()){
             applyPackageToQuotes(quotesToProcess);
-        }        
+        }
+
+        if(!guestChangedQuoteIds.isEmpty()){
+            recalculateQuoteLines(guestChangedQuoteIds);
+        }         
+    }
+    
+    //method to do recalculation of quote lines
+    private static void recalculateQuoteLines(Set<Id> quoteIdSet){
+        for(Id qId: quoteIdSet){
+            Custom_Quote_Controller cqController = new Custom_Quote_Controller(qId);
+            cqController.saveItems();
+        }
     }
     
     //method to apply Package Items to Quotes

@@ -102,11 +102,14 @@ div.accordion.active:after {
 }        
     </style>
     
+    <apex:detail inlineEdit="false" relatedList="false" id="quoteHeader" />
+    
     <apex:tabPanel switchType="client" selectedTab="Food" id="theTabPanel">
     <apex:tab label="Food" name="Food" id="Food"><c:K12K_Custom_Quote_Food /></apex:tab>
     <apex:tab label="Beverage" name="Beverage" id="Beverage"><c:K12K_Custom_Quote_Bev /></apex:tab>
-    <apex:tab label="Staff" name="Staff" id="Staff"><c:K12K_Custom_Quote_Staff /></apex:tab>        
-    <apex:tab label="Rentals" name="Rentals" id="Rentals"><c:K12K_Custom_Quote_Rentals /></apex:tab>                
+    <apex:tab label="Staff" name="Staff" id="Staff"><c:K12K_Custom_Quote_Staff /></apex:tab>
+    <apex:tab label="Rentals" name="Rentals" id="Rentals"><c:K12K_Custom_Quote_Rentals /></apex:tab>
+    <apex:tab label="Venue" name="Venue" id="Venue"><c:K12K_Custom_Quote_Venue /></apex:tab>
     </apex:tabPanel>
         
        
