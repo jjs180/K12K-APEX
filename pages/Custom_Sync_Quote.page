@@ -1,0 +1,4 @@
+<apex:page standardcontroller="Quote" extensions="Custom_Sync_Quote" action="{!SyncQuote}" >
+<apex:pagemessages />
+
+</apex:page>

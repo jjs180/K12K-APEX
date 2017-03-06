@@ -1,6 +1,7 @@
 /*
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Triggers on Quote
+* Covered by Quote_Trigger_Test
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Initial implementation
 * @author       Jason Sun <jsun@relationedge.com>
@@ -21,5 +22,6 @@ trigger Quote_Triggers on Quote (after insert, after update) {
             Quote_Trigger_Handlers.afterUpdate(trigger.newMap, trigger.oldMap);
         }
     }
+
     
 }

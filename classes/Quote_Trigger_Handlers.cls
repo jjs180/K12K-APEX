@@ -1,6 +1,7 @@
 /*
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Quote Trigger handler classes
+* Covered by Quote_Trigger_Test
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Initial implementation
 * @author       Jason Sun <jsun@relationedge.com>
@@ -10,7 +11,7 @@
 *
 *
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
-*/
+*/ 
 public class Quote_Trigger_Handlers {
 
     private static Set<Id> processedQuoteIds = new Set<Id>();    
@@ -61,7 +62,7 @@ public class Quote_Trigger_Handlers {
     private static void recalculateQuoteLines(Set<Id> quoteIdSet){
         for(Id qId: quoteIdSet){
             Custom_Quote_Controller cqController = new Custom_Quote_Controller(qId);
-            cqController.saveItems();
+            cqController.saveAllItems();
         }
     }
     
@@ -91,7 +92,7 @@ public class Quote_Trigger_Handlers {
         //Create a map of pricebook entry Ids with a combo key of 
         //Product2Id and PricebookId
         Map<String, PricebookEntry> priceBookEntryMap = new Map<string,PricebookEntry>();
-        for(PricebookEntry pbe: [SELECT Id, Product2Id, Pricebook2Id, UnitPrice FROM PricebookEntry WHERE Product2Id IN:ProductIdSet]){
+        for(PricebookEntry pbe: [SELECT Id, Product2Id, Product2.Alternative_Calculation__c, Pricebook2Id, UnitPrice FROM PricebookEntry WHERE Product2Id IN:ProductIdSet]){
             priceBookEntryMap.put(string.valueOf(pbe.product2Id) + string.valueOf(pbe.Pricebook2Id), pbe);
         }
         system.debug('pricebookentry map---' + priceBookEntryMap);
@@ -113,11 +114,12 @@ public class Quote_Trigger_Handlers {
         }
         
         if(!qliToInsert.isEmpty()){
-            try{
+            system.debug('Quote Lines list---' + qliToInsert);
+            try{ 
                 insert qliToInsert;
             }
             catch(Exception e){
-                system.debug('EXCEPTION occurred trying to insert quote Lines during automated package insert---' + e.getMessage());
+                system.debug('EXCEPTION occurred trying to insert quote Lines during automated package insert---' + e.getMessage());              
             }
         }
     }

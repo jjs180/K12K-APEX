@@ -1,0 +1,30 @@
+<apex:page standardController="Quote">
+    <apex:form >
+	<apex:pageBlock tabStyle="Quote" title="Quote Edit">
+		<apex:pageBlockButtons >
+			<apex:commandButton value="Save" action="{!Save}" />
+			<apex:commandButton value="Cancel" action="{!Cancel}" />            
+		</apex:pageBlockButtons>    
+    <apex:pageBlockSection collapsible="false" columns="2" title="Quote Information" >
+    	<apex:inputField value="{!Quote.Name}"/>
+        <apex:inputField value="{!Quote.Package__c}"/>
+        <apex:inputField value="{!Quote.OpportunityId}"/>
+        <apex:inputField value="{!Quote.Status}"/>        
+        <apex:inputField value="{!Quote.AccountId}"/>    
+        <apex:inputField value="{!Quote.Event_Date__c}"/>        
+        <apex:inputField value="{!Quote.Guest_Count__c}" required="true" />
+        <apex:inputField value="{!Quote.Event_Start_Time__c}"/> 
+        <apex:inputField value="{!Quote.Kids_Count__c}"/>       
+        <apex:inputField value="{!Quote.Event_End_Time__c }"/>
+        <apex:inputField value="{!Quote.Vendor_Count__c}"/>        
+        <apex:inputField value="{!Quote.Day_or_Night__c}"/>
+        <apex:inputField value="{!Quote.Service_Style__c}" required="true"/>
+        <apex:inputField value="{!Quote.Event_Type__c}"/>        
+    </apex:pageBlockSection>    
+    <apex:pageBlockSection collapsible="false" columns="2" title="Totals" >
+        <apex:inputField value="{!Quote.K12_Service_Percentage__c }" required="true"/>
+        <apex:inputField value="{!Quote.Venue_Service_Percentage__c }" required="true"/>        
+    </apex:pageBlockSection>        
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

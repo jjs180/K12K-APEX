@@ -1,6 +1,7 @@
 /*
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Wrapper for Quote Line. Used in the Custom Menu Selection UI
+* Covered by Custom_Quote_ControllerTestClass
 * ─────────────────────────────────────────────────────────────────────────────────────────────────
 * Initial implementation
 * @author       Jason Sun <jsun@relationedge.com>
@@ -26,6 +27,14 @@ public class Quote_Line_Wrapper {
     public boolean Selected {get;set;}    
     public string category {get;set;}
     public string subType {get;set;}
-
+    public boolean isCheckbox {get;set;}
+    public boolean quantitySelected {
+        get {
+        	return item.Selected_Quantity__c > 0;
+    	}
+        set {
+            item.Selected_Quantity__c = (value ? 1 : 0);
+        }
+    }
     
 }
